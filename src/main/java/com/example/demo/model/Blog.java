@@ -2,29 +2,29 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 public class Blog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String content;
-    private LocalDateTime localDateTime;
-    @ManyToOne
-    private Status status;
+    private String content ;
     private String title;
-
-    public Blog(Long id, String content, LocalDateTime localDateTime, Status status, String title) {
-        this.id = id;
-        this.content = content;
-        this.localDateTime = localDateTime;
-        this.status = status;
-        this.title = title;
-    }
+    private String status;
+    private double likeCount;
+    @ManyToOne
+    private User user;
 
     public Blog() {
-        this.localDateTime = LocalDateTime.now();
+    }
+
+    public Blog(Long id, String content, String title, String status, double likeCount, User user) {
+        this.id = id;
+        this.content = content;
+        this.title = title;
+        this.status = status;
+        this.likeCount = likeCount;
+        this.user = user;
+
     }
 
     public Long getId() {
@@ -43,22 +43,6 @@ public class Blog {
         this.content = content;
     }
 
-    public LocalDateTime getLocalDateTime() {
-        return localDateTime;
-    }
-
-    public void setLocalDateTime(LocalDateTime localDateTime) {
-        this.localDateTime = localDateTime;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -66,4 +50,29 @@ public class Blog {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public double getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(double likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
+

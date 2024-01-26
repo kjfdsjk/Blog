@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js"
+            integrity="sha512-TjBzDQIDnc6pWyeM1bhMnDxtWH0QpOXMcVooglXrali/Tj7W569/wd4E8EDjk1CwOAOPSJon1VfcEt1BI4xIrA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+<div id="main">
+</div>
+
+<script>
+    showBlog()
+
+    function showStatus() {
+
+    }
+
+    showStatus()
+
+    function showBlog() {
+        axios.get("http://localhost:8082/api/blog").then(x => {
+            let str = '';
+            let list = x.data;
+            for (const item of list) {
+                str += `<h2>${item.content},${item.time},${item.status.name},${item.title}</h2>` +
+                    `<button onclick="showEditForm(${item.id})">EDIT</button>` +
+                    `<button onclick="deleteProduct()">DELETE</button>`
+            }
+            document.getElementById('main').innerHTML = str;
+        })
+    }
+
+    function showFormAdd() {
+        axios.get("http://localhost:8082/api/status").then(x => {
+            let list = x.data;
+            let str = '' +
+                '<input type="text" id="content">' +
+                '<input type="hidden" id="time">' +
+                '<select id="id">'
+            for (const item of list) {
+                str += `<option value="${item.id}">${item.name}</option>`
+            }
+            str += '</select>' +
+                '<input type="text" id="title">' +
+                `<button onclick="add()">ADD</button>`
+            document.getElementById('main').innerHTML = str
+        })
+    }
+
+    function add() {
+        let data = {
+            content: document.getElementById('content').value,
+            time: document.getElementById('time').value,
+            category: {
+                id: document.getElementById('id').value
+            },
+            title: document.getElementById('title').value
+        }
+        axios.post('http://localhost:8082/api/blog', data).then(() => {
+            showBlog()
+        })
+    }
+
+    function showEditForm(id) {
+        axios.get("http://localhost:8082/api/status").then(a => {
+            axios.get(`http://localhost:8082/api/blog/${id}`).then((xx) => {
+                let list = a.data;
+                let str = '' +
+                    '<input type="hidden" id="idBlog" value="' + xx.data.id + '">' +
+                    '<input type="text" id="content"  value="' + xx.data.content + '">' +
+                    '<input type="hidden" id="time" value="' + xx.data.time + '">' +
+                    '<select id="id">'
+                for (const item of list) {
+                    str += `<option value="${item.id}">${item.name}</option>`
+                }
+                str += '</select>' +
+                    '<input type="text" id="title" value="' + xx.data.title + '">' +
+                    `<button onclick="edit()">ADD</button>`
+                document.getElementById('main').innerHTML = str
+            })
+        })
+    }
+
+    function edit() {
+        let id = document.getElementById('idBlog').value;
+        let data = {
+            content: document.getElementById('content').value,
+            time: document.getElementById('time').value,
+            category: {
+                id: document.getElementById('id').value
+            },
+            title: document.getElementById('title').value
+        }
+        console.log(data)
+        axios.put(`http://localhost:8082/api/blog/${id}`, data).then(() => {
+            showBlog();
+        })
+    }
+
+    function deleteProduct(id) {
+        axios.delete(`http://localhost:8082/api/blog/${id}`).then(() => {
+            showBlog();
+        })
+    }
+
+</script>
+</body>
+</html>
